@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * Implementation of hook_init().
+ */
+function miaozhen_sitemonitor_init() {
+    $tracking_script = "(function(a, e, f, g, b, c, d) {a.ClickiTrackerName = b;
+ a[b] = a[b] || function() {(a[b].queue = a[b].queue || []).push(arguments)};
+ a[b].start = +new Date; c = e.createElement(f); d = e.getElementsByTagName(f)[0];
+ c.async = 1; c.src = g; d.parentNode.insertBefore(c, d)
+ })(window, document, 'script', '//stm-cdn.cn.miaozhen.com/clicki.min.js?v='+Math.round(new Date().getTime()/1000/300), 'stm_clicki');
+ stm_clicki('create', 'dc-1880', 'auto');
+ stm_clicki('send', 'pageview');";
+
+    $heatmap_script = "stm_clicki('require','heatmap', '//stm-cdn.cn.miaozhen.com/plugins/heatmap.js?v='+Math.round(new Date().getTime()/1000/1800));
+stm_clicki('heatmap:on',5);";
+
+    drupal_add_js($tracking_script, array('type' => 'inline', 'scope' => 'header'));
+    drupal_add_js($heatmap_script, array('type' => 'inline', 'scope' => 'header'));
+
+    $event_tracking = variable_get('miaozhen_sitemonitor_event_tracking_code', '');
+    if ($event_tracking) {
+        drupal_add_js($event_tracking, array('type' => 'inline', 'scope' => 'footer'));
+    }
+}
+
+
+
+/**
+ * Implements hook_menu().
+ */
+function miaozhen_sitemonitor_menu()
+{
+    $items = array();
+    $items['admin/config/system/miaozhen-sitemonitor'] = array(
+        'title' => 'Miaozhen SiteMonitor Events',
+        'description' => 'Configure settings for Miaozhen SiteMonitor.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('miaozhen_sitemonitor_settings_form'),
+        'access arguments' => array('administer miaozhen_sitemonitor'),
+        'file' => 'miaozhen_sitemonitor.admin.inc',
+    );
+
+    return $items;
+}

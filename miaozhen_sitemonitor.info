@@ -1,0 +1,5 @@
+name = Miaozhen SiteMonitor
+description = Adds the Miaozhen SiteMonitor tracking code.
+core = 7.x
+
+configure = admin/config/system/miaozhen-sitemonitor
